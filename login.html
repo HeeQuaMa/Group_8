@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images7.alphacoders.com/786/thumb-1920-786961.png');
+            height: 100vh;
+        }
+
+        #login .container #login-row #login-column #login-box {
+            margin-top: 120px;
+            max-width: 600px;
+            height: 320px;
+            border: 1px solid #9C9C9C;
+            background-color: #EAEAEA;
+        }
+
+        #login .container #login-row #login-column #login-box #login-form {
+            padding: 20px;
+        }
+
+        #login .container #login-row #login-column #login-box #login-form #register-link {
+            margin-top: -85px;
+        }
+    </style>
+    <script>
+
+        function signup() {
+            window.location.href = "/signup"
+        }
+
+        function login() {
+
+            if ($('#userName').val() == '') {
+                alert("Đăng nhập thất bại");
+                return;
+            }
+            if ($('#pass').val() == '') {
+                alert("Đăng nhập thất bại");
+                return;
+            }
+            if ($('#userName').val() != '' && $('#pass').val() != '') {  
+                $.post("/Getlogin", {
+                    TaiKhoan: $('#userName').val(),
+                    MatKhau: $('#pass').val()
+                }, function (data, status) {
+                    if (data[0] == null) {
+                        alert("Đăng nhập thất bại");
+                    }
+                    else {
+                        localStorage.setItem("user", JSON.stringify(data));
+                        window.location.href = "/index";
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="login">
+        <h1 class="text-center text-white pt-5">Comic World</h1>
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <form id="login-form" class="form">
+                            <h3 class="text-center text-info">Login</h3>
+                            <div class="form-group">
+                                <label for="username" class="text-info">Username:</label><br>
+                                <input type="text" name="username" id="userName" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Password:</label><br>
+                                <input type="password" name="password" id="pass" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="remember-me" class="text-info"><span>Remember me</span> 
+                                    <input id="remember-me" name="remember-me" type="checkbox"><span></span></label><br>
+                                <input type="button" value="Login" onclick="login()" class="btn btn-info btn-md" />
+                            </div>
+                            <div id="register-link" class="text-right">
+                                <a href="#" class="text-info" onclick="signup()">Register here</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

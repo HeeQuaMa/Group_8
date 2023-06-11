@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        #wrapper {
+            padding-left: 0;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        #wrapper.toggled {
+            padding-left: 250px;
+        }
+
+        #sidebar-wrapper {
+            z-index: 1000;
+            position: fixed;
+            left: 250px;
+            width: 0;
+            height: 100%;
+            margin-left: -250px;
+            overflow-y: auto;
+            background-color: rgb(0, 153, 255);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            width: 250px;
+        }
+
+        #page-content-wrapper {
+            width: 100%;
+            position: absolute;
+            padding: 15px;
+        }
+
+        #wrapper.toggled #page-content-wrapper {
+            position: absolute;
+            margin-right: -250px;
+        }
+
+
+        /* Sidebar Styles */
+
+        .sidebar-nav {
+            position: absolute;
+            top: 0;
+            width: 250px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            text-indent: 20px;
+            line-height: 40px;
+        }
+
+        .sidebar-nav li a {
+            display: block;
+            text-decoration: none;
+            color: white;
+        }
+
+        .sidebar-nav li a:hover {
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-nav li a:active,
+        .sidebar-nav li a:focus {
+            text-decoration: none;
+        }
+
+        .sidebar-nav>.sidebar-brand {
+            height: 65px;
+            font-size: 18px;
+            line-height: 60px;
+        }
+
+        .sidebar-nav>.sidebar-brand a {
+            color: white;
+        }
+
+        .sidebar-nav>.sidebar-brand a:hover {
+            color: #fff;
+            background: none;
+        }
+
+        .content {
+            padding: 0px 16px 25px 16px;
+            padding: 15px;
+            height: auto;
+            width: 100%;
+            display: flex;
+        }
+
+        .content2 {
+            padding: 16px 16px 25px 16px;
+            height: auto;
+            width: 100%;
+
+        }
+
+        .content3 {
+            padding: 16px 16px 25px 16px;
+            display: flex;
+            width: 320px;
+            justify-content: space-between;
+        }
+
+        .content .leftcolumn {
+            width: 100%;
+            margin: 15px;
+            padding: 10px;
+        }
+
+        .content .rightcolumn {
+            width: 100%;
+            margin: 15px;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            height: auto;
+            background-color: rgba(233, 233, 233, 0.993);
+        }
+
+        table.list {
+            width: 100%;
+        }
+
+        table.list thead {
+            display: table;
+            float: left;
+            width: 100%;
+        }
+
+        table.list thead th {
+            text-align: center;
+        }
+
+        table.list tbody {
+            float: left;
+            width: 100%;
+        }
+
+        table.list tbody tr {
+            display: table;
+            width: 100%;
+        }
+        .Search{
+            padding: 16px 16px 25px 16px;
+            display: flex;
+            width: 50%;
+            justify-content: space-around;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var user = localStorage.getItem("user");
+            if (user === null || user === undefined) {
+                $("#user").html("Chưa đăng nhập");
+            }
+            else {
+                var objUser = JSON.parse(user);
+                $("#user").html("Xin chào: " + objUser[0].TenTK);
+            }
+            getData();
+            gethoadon();
+            getkhachhang();
+        });
+        //thêm
+        function them() {
+            if ($('#MaSach').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaHang').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#TenSach').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#TacGia').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#NhaXB').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Nhacungcap').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#ChuDe').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Hinhthuc').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#NamXB').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Trongluong').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Kichthuoc').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Sotrang').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#DonGia').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Mota').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#trongkho').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#SachImage').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+
+            if ($('#MaSach').val() != '' && $('#MaHang').val() != '' && $('#TenSach').val() != '' && $('#TacGia').val() != '' && $('#NhaXB').val() != ''
+                && $('#Nhacungcap').val() != '' && $('#ChuDe').val() != '' && $('#Hinhthuc').val() != '' && $('#NamXB').val() != '' && $('#Trongluong').val() != ''
+                && $('#Kichthuoc').val() != '' && $('#Sotrang').val() != '' && $('#DonGia').val() != '' && $('#Mota').val() != '' && $('#trongkho').val() != ''
+                && $('#SachImage').val() != '') {
+                $.post("/checksach", {
+                    MaSach: $('#MaSach').val(),
+                }, function (data, status) {
+                    if (data[0] == null) {
+                        $.post("/adthem", {
+                            MaSach: $('#MaSach').val(),
+                            MaHang: $('#MaHang').val(),
+                            TenSach: $('#TenSach').val(),
+                            TacGia: $('#TacGia').val(),
+                            NhaXB: $('#NhaXB').val(),
+                            Nhacungcap: $('#Nhacungcap').val(),
+                            ChuDe: $('#ChuDe').val(),
+                            Hinhthuc: $('#Hinhthuc').val(),
+                            NamXB: $('#NamXB').val(),
+                            Trongluong: $('#Trongluong').val(),
+                            Kichthuoc: $('#Kichthuoc').val(),
+                            Sotrang: $('#Sotrang').val(),
+                            DonGia: $('#DonGia').val(),
+                            Mota: $('#Mota').val(),
+                            trongkho: $('#trongkho').val(),
+                            SachImage: $('#SachImage').val(),
+                            catId: $('#catId').val(),
+                            proindex: $('#proindex').val()
+                        }, function (data, status) {
+                            alert("Thêm thành công");
+                            getData();
+                        });
+
+                    }
+                    else {
+                        alert("Đã tồn tại");
+                    }
+                });
+            }
+        }
+
+        // sửa
+        function sua() {
+            if ($('#MaSach').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaHang').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#TenSach').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#TacGia').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#NhaXB').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Nhacungcap').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#ChuDe').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Hinhthuc').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#NamXB').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Trongluong').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Kichthuoc').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Sotrang').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#DonGia').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Mota').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#trongkho').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#SachImage').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaSach').val() != '' && $('#MaHang').val() != '' && $('#TenSach').val() != '' && $('#TacGia').val() != '' && $('#NhaXB').val() != ''
+                && $('#Nhacungcap').val() != '' && $('#ChuDe').val() != '' && $('#Hinhthuc').val() != '' && $('#NamXB').val() != '' && $('#Trongluong').val() != ''
+                && $('#Kichthuoc').val() != '' && $('#Sotrang').val() != '' && $('#DonGia').val() != '' && $('#Mota').val() != '' && $('#trongkho').val() != ''
+                && $('#SachImage').val() != '') {
+
+                $.post("/adsua", {
+                    MaSach: $('#MaSach').val(),
+                    MaHang: $('#MaHang').val(),
+                    TenSach: $('#TenSach').val(),
+                    TacGia: $('#TacGia').val(),
+                    NhaXB: $('#NhaXB').val(),
+                    Nhacungcap: $('#Nhacungcap').val(),
+                    ChuDe: $('#ChuDe').val(),
+                    Hinhthuc: $('#Hinhthuc').val(),
+                    NamXB: $('#NamXB').val(),
+                    Trongluong: $('#Trongluong').val(),
+                    Kichthuoc: $('#Kichthuoc').val(),
+                    Sotrang: $('#Sotrang').val(),
+                    DonGia: $('#DonGia').val(),
+                    Mota: $('#Mota').val(),
+                    trongkho: $('#trongkho').val(),
+                    SachImage: $('#SachImage').val(),
+                    catId: $('#catId').val(),
+                    proindex: $('#proindex').val()
+                }, function (data, status) {
+                    alert("Sửa thành công");
+                    getData();
+                });
+            }
+        }
+        function suahd() {
+            if ($('#MaHD1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaKH1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaSach1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#SoLuong1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#GiaBan1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#NgayBan1').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+
+            if ($('#MaHD1').val() != '' && $('#MaKH1').val() != '' && $('#MaSach1').val() != '' && $('#SoLuong1').val() != ''
+                && $('#GiaBan1').val() != ''
+            ) {
+                $.post("/adsuahd", {
+                    MaHD: $('#MaHD1').val(),
+                    MaKH: $('#MaKH1').val(),
+                    MaSach: $('#MaSach1').val(),
+                    SoLuong: $('#SoLuong1').val(),
+                    GiaBan: $('#GiaBan1').val(),
+                    NgayBan: $('#NgayBan1').val()
+                }, function (data, status) {
+                    alert("Sửa thành công");
+                    gethoadon();
+                });
+            }
+
+        }
+        function suakh() {
+            if ($('#STT').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#MaKH2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#TenKH2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Diachi2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#SoDienThoai2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Tongtien').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#STT').val() != '' && $('#TenKH2').val() != '' && $('#Diachi2').val() != '' && $('#SoDienThoai2').val() != '' && $('#Tongtien').val() != '') {
+                $.post("/adsuakh", {
+                    STT: $('#STT').val(),
+                    TenKH: $('#TenKH2').val(),
+                    Diachi: $('#Diachi2').val(),
+                    SoDienThoai: $('#SoDienThoai2').val(),
+                    Tongtien: $('#Tongtien').val(),
+                }, function (data, status) {
+                    alert("Sửa thành công");
+                    getkhachhang();
+                });
+            }
+        }
+
+        // xóa
+        function xoa(MaSach) {
+            $.post("/adxoa", {
+                MaSach: MaSach,
+            }, function (data, status) {
+                alert("Xóa thành công");
+                getData();
+            });
+        }
+        function xoakh(STT) {
+            $.post("/adxoakh", {
+                STT: STT,
+            }, function (data, status) {
+                alert("Xóa thành công");
+                getkhachhang();
+            });
+        }
+        function xoahd(MaHD) {
+            $.post("/adxoahd", {
+                MaHD: MaHD,
+            }, function (data, status) {
+                alert("Xóa thành công");
+                gethoadon();
+            });
+        }
+        function index() {
+            window.location.href = "/index"
+        }
+
+        //dán chữ
+        function onEdit(MaSach, MaHang, TenSach, TacGia, NhaXB, Nhacungcap, ChuDe, Hinhthuc, NamXB, Trongluong, Kichthuoc, Sotrang, DonGia, Mota, TrongKho, SachImage, catId, productIndex) {
+            var TenSach1 = $('#TenSach' + MaSach).val();
+            var TacGia1 = $('#TacGia' + MaSach).val();
+            var NhaXB1 = $('#NhaXB' + MaSach).val();
+            var Nhacungcap1 = $('#Nhacungcap' + MaSach).val();
+            var ChuDe1 = $('#ChuDe' + MaSach).val();
+            var Hinhthuc1 = $('#Hinhthuc' + MaSach).val();
+            var Kichthuoc1 = $('#Kichthuoc' + MaSach).val();
+            var DonGia1 = $('#DonGia' + MaSach).val();
+            var Mota1 = $('#Mota' + MaSach).val();
+            var SachImage1 = $('#SachImage' + MaSach).val();
+
+            $('#MaSach').val(MaSach);
+            $('#MaHang').val(MaHang);
+            $('#TenSach').val(TenSach1);
+            $('#TacGia').val(TacGia1);
+            $('#NhaXB').val(NhaXB1);
+            $('#Nhacungcap').val(Nhacungcap1);
+            $('#ChuDe').val(ChuDe1);
+            $('#Hinhthuc').val(Hinhthuc1);
+            $('#NamXB').val(NamXB);
+            $('#Trongluong').val(Trongluong);
+            $('#Kichthuoc').val(Kichthuoc1);
+            $('#Sotrang').val(Sotrang);
+            $('#DonGia').val(DonGia1);
+            $('#Mota').val(Mota1);
+            $('#trongkho').val(TrongKho);
+            $('#SachImage').val(SachImage1);
+            $('#catId').val(catId);
+            $('#proindex').val(productIndex);
+        }
+        function onEdithd(MaHD, MaKH, MaSach, SoLuong, GiaBan) {
+            $('#MaHD1').val(MaHD);
+            $('#MaKH1').val(MaKH);
+            $('#MaSach1').val(MaSach);
+            $('#SoLuong1').val(SoLuong);
+            $('#GiaBan1').val(GiaBan)
+        }
+        function onEditkh(STT, MaKH, TenKH, Diachi, SoDienThoai, Tongtien) {
+            var TenKH1 = $('#TenKH' + MaKH).val();
+            var Diachi1 = $('#Diachi' + MaKH).val();
+            var Tongtien1 = $('#Tongtien' + MaKH).val();
+
+            $('#STT').val(STT),
+                $('#MaKH2').val(MaKH),
+                $('#TenKH2').val(TenKH1),
+                $('#Diachi2').val(Diachi1),
+                $('#SoDienThoai2').val(SoDienThoai)
+            $('#Tongtien').val(Tongtien1)
+        }
+
+        //Show bảng
+        function getData() {
+            $.post("/get-product-admin", {
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>MaSach</td><td>SachImage</td><td>TenSach</td><td>DonGia</td><td></td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaSach']}</b>
+
+            <input type="text" value="${item['Mota']}" id="Mota${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['TenSach']}" id="TenSach${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['TacGia']}" id="TacGia${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Nhacungcap']}" id="Nhacungcap${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['NhaXB']}" id="NhaXB${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['ChuDe']}" id="ChuDe${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Hinhthuc']}" id="Hinhthuc${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Kichthuoc']}" id="Kichthuoc${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['DonGia']}" id="DonGia${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['SachImage']}" id="SachImage${item['MaSach']}" style="display: none;">
+
+
+        </td>
+        <td style="padding: 10px 13px;"><img style="width:140px;height: auto;" src='/images/${item['SachImage']}'/></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;"><b>${item['TenSach']}</b></div></td>
+        <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['DonGia']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEdit('${item['MaSach']}','${item['MaHang']}','tensach','tacgia','nhaxb','nhacc','chude','hinhthuc','${item['NamXB']}','${item['Trongluong']}','hinhthuc','${item['Sotrang']}','dongia','mota','${item['TrongKho']}','sachimg','${item['catId']}','${item['productIndex']}')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoa(${item['MaSach']})'/></td>
+    </tr>
+</tbody>
+
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content').html(spHTML);
+            });
+        }
+
+        function gethoadon() {
+            $.post("/gethoadon", {
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>MaHD</td><td>MaKH</td><td>MaSach</td><td>SoLuong</td><td>GiaBan</td><td>NgayBan</td><td></td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaHD']}</b></td>
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaKH']}</b></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['MaSach']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['SoLuong']}</div></td>
+        <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['GiaBan']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['NgayBan']}</div></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEdithd('${item['MaHD']}','${item['MaKH']}','${item['MaSach']}','${item['SoLuong']}','${item['GiaBan']}')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoahd(${item['MaHD']})'/></td>
+    </tr>
+</tbody>
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content2').html(spHTML);
+            });
+        }
+
+        function getkhachhang() {
+            $.post("/getkhachhang", {
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>STT</td><td>MaKH</td><td>TenKH</td><td>Diachi</td><td>SoDienThoai</td><td>NgayMua</td><td>Tongtien</td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['STT']}</td>
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaKH']}</b>
+        
+            <input type="text" value="${item['TenKH']}" id="TenKH${item['MaKH']}" style="display: none;">
+            <input type="text" value="${item['Diachi']}" id="Diachi${item['MaKH']}" style="display: none;">
+            <input type="text" value="${item['Tongtien']}" id="Tongtien${item['MaKH']}" style="display: none;">
+
+        </td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['TenKH']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['Diachi']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['SoDienThoai']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['NgayMua']}</div></td>
+            <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['Tongtien']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEditkh(${item['STT']},'${item['MaKH']}','tenkhach','diachi','${item['SoDienThoai']}','Tongtien')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoakh(${item['STT']})'/></td>
+    </tr>
+</tbody>
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content3').html(spHTML);
+            });
+        }
+        // ẩn hiện bảng
+        function show1() {
+            document.getElementById('show1').style.display = "block"
+            document.getElementById('show2').style.display = "none"
+            document.getElementById('show3').style.display = "none"
+        }
+        function show2() {
+            document.getElementById('show1').style.display = "none"
+            document.getElementById('show2').style.display = "block"
+            document.getElementById('show3').style.display = "none"
+        }
+        function show3() {
+            document.getElementById('show1').style.display = "none"
+            document.getElementById('show2').style.display = "none"
+            document.getElementById('show3').style.display = "block"
+        }
+
+        // search
+        function search() {
+            $.post("searchsach", {
+                searchTK: $('#search').val()
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>MaSach</td><td>SachImage</td><td>TenSach</td><td>DonGia</td><td></td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaSach']}</b>
+
+            <input type="text" value="${item['Mota']}" id="Mota${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['TenSach']}" id="TenSach${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['TacGia']}" id="TacGia${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Nhacungcap']}" id="Nhacungcap${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['NhaXB']}" id="NhaXB${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['ChuDe']}" id="ChuDe${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Hinhthuc']}" id="Hinhthuc${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['Kichthuoc']}" id="Kichthuoc${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['DonGia']}" id="DonGia${item['MaSach']}" style="display: none;">
+            <input type="text" value="${item['SachImage']}" id="SachImage${item['MaSach']}" style="display: none;">
+
+
+        </td>
+        <td style="padding: 10px 13px;"><img style="width:140px;height: auto;" src='/images/${item['SachImage']}'/></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;"><b>${item['TenSach']}</b></div></td>
+        <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['DonGia']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEdit('${item['MaSach']}','${item['MaHang']}','tensach','tacgia','nhaxb','nhacc','chude','hinhthuc','${item['NamXB']}','${item['Trongluong']}','hinhthuc','${item['Sotrang']}','dongia','mota','${item['TrongKho']}','sachimg','${item['catId']}','${item['productIndex']}')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoa(${item['MaSach']})'/></td>
+    </tr>
+</tbody>
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content').html(spHTML);
+            });
+        }
+
+        function search2() {
+            $.post("searchhoadon", {
+                searchTK: $('#search2').val()
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>MaHD</td><td>MaKH</td><td>MaSach</td><td>SoLuong</td><td>GiaBan</td><td>NgayBan</td><td></td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaHD']}</b></td>
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaKH']}</b></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['MaSach']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['SoLuong']}</div></td>
+        <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['GiaBan']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['NgayBan']}</div></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEdithd('${item['MaHD']}','${item['MaKH']}','${item['MaSach']}','${item['SoLuong']}','${item['GiaBan']}')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoahd(${item['MaHD']})'/></td>
+    </tr>
+</tbody>
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content2').html(spHTML);
+            });
+        }
+
+        function search3() {
+            $.post("searchkhachhang", {
+                searchTK: $('#search3').val()
+            }, function (data, status) {
+                var spHTML = `<table border='1' style='width: 100%;' ><tr><td>STT</td><td>MaKH</td><td>TenKH</td><td>Diachi</td><td>SoDienThoai</td><td>NgayMua</td><td>Tongtien</td><td></td></tr>content</table>`;
+                var tmp = "";
+                data.forEach((item) => {
+                    tmp += `
+<tbody style="border-bottom: 1px solid black;background-color: #f3f3f3;font-weight: bold;color: #009879;">
+    <tr style="background-color: #f3f3f3;">
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['STT']}</td>
+        <td style="padding: 10px 13px;"><b style="text-align:center;line-height: 10px;">${item['MaKH']}</b>
+        
+            <input type="text" value="${item['TenKH']}" id="TenKH${item['MaKH']}" style="display: none;">
+            <input type="text" value="${item['Diachi']}" id="Diachi${item['MaKH']}" style="display: none;">
+            <input type="text" value="${item['Tongtien']}" id="Tongtien${item['MaKH']}" style="display: none;">
+
+        </td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['TenKH']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['Diachi']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['SoDienThoai']}</div></td>
+        <td style="padding: 10px 13px;><div style="text-align:center;line-height: 10px;">${item['NgayMua']}</div></td>
+            <td style="padding: 10px 13px;"><span style="color:red;" class="price">${item['Tongtien']} </span><a style="color:red;">Đ<a></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Edit' onclick = onEditkh(${item['STT']},'${item['MaKH']}','tenkhach','diachi','${item['SoDienThoai']}','Tongtien')></td>
+        <td style="padding: 10px 13px;width:5%"><input type='button' value='Delete' onclick='xoakh(${item['STT']})'/></td>
+    </tr>
+</tbody>
+                    `;
+                });
+                console.log(tmp);
+                spHTML = spHTML.replace('content', tmp);
+                $('#content3').html(spHTML);
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="wrapper" class="toggled">
+
+        <div class="container">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <a href="#" style="background-color: rgba(0, 0, 0, 0.692);">Menu</a>
+                    </li>
+                    <li>
+                        <a href="/index">Trang chủ</a>
+                    </li>
+                    <li>
+                        <a href="#show1" onclick="show1()">Sản phẩm</a>
+                    </li>
+                    <li>
+                        <a href="#show2" onclick="show2()">Hoá đơn</a>
+                    </li>
+                    <li>
+                        <a href="#show3" onclick="show3()">Khách hàng</a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Page Content -->
+            <div id="show1">
+                <b style="color: rgb(0, 153, 255);font-size: 28px;">Thông Tin sản phẩm</b>
+                <div class="content">
+                    <div class="leftcolumn">
+                        <b>Mã sách:</b><br><input type="number" id="MaSach" /><br>
+                        <b>Hình thức:</b><br><input type="text" id="Hinhthuc" /><br>
+                        <b>Trọng lượng:</b><br><input type="text" id="Trongluong" /><br>
+                        <b>Kích thước:</b><br><input type="text" id="Kichthuoc" /><br>
+                        <b>Số trang:</b><br><input type="text" id="Sotrang" /><br>
+                        <b>Trong Kho:</b><br><input type="number" id="trongkho" /><br>
+                        <b>catId:</b><br><input type="number" id="catId" /><br>
+                        <b>productIndex:</b><br><input type="number" id="proindex" /><br>
+                    </div>
+                    <div class="rightcolumn">
+                        <b>Mã hàng:</b><br><input type="text" id="MaHang" /><br>
+                        <b>Tên Sách:</b><br><input type="text" id="TenSach" /><br>
+                        <b>Tác Giả:</b><br><input type="text" id="TacGia" /><br>
+                        <b>Nhà XB:</b><br><input type="text" id="NhaXB" /><br>
+                        <b>Nhà cung cấp:</b><br><input type="text" id="Nhacungcap" /><br>
+                        <b>Chủ đề:</b><br><input type="text" id="ChuDe" /><br>
+                        <b>Năm XB:</b><br><input type="number" id="NamXB" /><br>
+                        <b>Đơn Giá:</b><br><input type="text" id="DonGia" /><br>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="content2">
+                    <b>Sách Image:</b><br><input type="text" id="SachImage" style="width: 400px;" /><br>
+                    <b>Mô tả:</b><br><textarea rows="6" cols="20" id="Mota" style="width: 800px;"></textarea>
+                </div>
+
+                <div class="content3">
+                    <button onclick="them()">Thêm sản phẩm</button>
+                    <button onclick="sua()">Sửa sản phẩm</button>
+                </div>
+                <hr>
+                <div class="Search">
+                    <button onclick="getData()">Reset</button>
+                    <input type="text" id="search" placeholder="Search" style="width: 400px;">
+                        <input type="button" value="Search" onclick="search(event)">
+                    </div>
+                <div class="table" id="content" style="text-align: center;padding: 5px;"></div>
+                <hr>
+            </div>
+            <div id="show2" style="display: none;">
+                <b style="color: rgb(0, 153, 255);font-size: 28px;">Thông Tin hóa đơn</b>
+                <div class="content">
+                    <div class="leftcolumn">
+                        <b>Mã hóa đơn:</b><br><input type="number" id="MaHD1" /><br>
+                        <b>Mã khách hàng:</b><br><input type="number" id="MaKH1" /><br>
+                        <b>Mã sách:</b><br><input type="number" id="MaSach1" /><br>
+                    </div>
+                    <div class="rightcolumn">
+                        <b>Số lượng:</b><br><input type="number" id="SoLuong1" /><br>
+                        <b>Giá bán:</b><br><input type="number" id="GiaBan1" /><br>
+                    </div>
+                </div>
+                <hr>
+                <div class="content3">
+                    <button onclick="suahd()">Sửa hóa đơn</button>
+                </div>
+                <div class="Search">
+                    <button onclick="gethoadon()">Reset</button>
+                    <input type="text" id="search2" placeholder="Search" style="width: 400px;">
+                        <input type="button" value="Search" onclick="search2()">
+                    </div>
+                <hr>
+                <div class="table" id="content2" style="text-align: center;padding: 5px;"></div>
+                <hr>
+            </div>
+            <div id="show3" style="display: none;">
+                <b style="color: rgb(0, 153, 255);font-size: 28px;">Thông Tin khách hàng</b>
+                <div class="content">
+                    <div class="leftcolumn">
+                        <b>STT:</b><br><input type="number" id="STT" /><br>
+                        <b>Mã khách hàng:</b><br><input type="number" id="MaKH2" /><br>
+                        <b>Tên khách hàng:</b><br><input type="text" id="TenKH2" /><br>
+                    </div>
+                    <div class="rightcolumn">
+                        <b>Địa chỉ:</b><br><input type="text" id="Diachi2" /><br>
+                        <b>Số điện thoại:</b><br><input type="number" id="SoDienThoai2" /><br>
+                        <b>Tổng tiền:</b><br><input type="number" id="Tongtien" /><br>
+                    </div>
+                </div>
+                <hr>
+                <div class="content3">
+                    <button onclick="suakh()">Sửa khách hàng</button>
+                </div>
+                <hr>
+                <div class="Search">
+                <button onclick="getkhachhang()">Reset</button>
+                <input type="text" id="search3" placeholder="Search" style="width: 400px;">
+                    <input type="button" value="Search" onclick="search3()">
+                </div>
+                <div class="table" id="content3" style="text-align: center;padding: 5px;"></div>
+            </div>
+
+            <!-- /#page-content-wrapper -->
+            <div class="footer">
+                <footer class="bg-light text-center text-lg-start">
+                    <!-- Copyright -->
+                    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                        © Admin:
+                        <a class="text-dark" href="">Official website</a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+        integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

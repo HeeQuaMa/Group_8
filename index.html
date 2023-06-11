@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+  <style>
+    body {
+      font-size: 16px;
+    }
+
+    .content {
+      padding: 16px 16px 25px 16px;
+      margin: 0px 0px 10px 0px;
+      height: auto;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .content2 {
+      padding: 16px 16px 25px 16px;
+      margin: 0px 0px 10px 0px;
+      height: auto;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: white;
+      margin-bottom: 20px;
+      line-height: 40px;
+    }
+
+    .content3 {
+      padding: 16px 16px 25px 16px;
+      margin-top: 10px;
+      clear: both;
+      margin: 0px 0px 10px 0px;
+      font-weight: 1.2em;
+      width: 100%;
+      background-color: white;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      width: 100%;
+      background-color: rgba(233, 233, 233, 0.993);
+    }
+
+    .navbar-brand {
+      border-bottom: solid 1px black;
+    }
+
+    .nav-link {
+      border-bottom: solid 1px black;
+    }
+
+    .picture-slime {
+      text-decoration: none;
+    }
+
+    #content1 {
+      margin: 13px 18px;
+      padding: 0 10px;
+    }
+
+    .acc {
+      font-style: inherit;
+      color: red;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      $.get("http://localhost:3000/", function (data, status) {
+        $('#content1').html(data);
+      });
+      var user = localStorage.getItem("user");
+      if (user === null || user === undefined) {
+        $("#user").html("Chưa đăng nhập");
+      }
+      else {
+        var objUser = JSON.parse(user);
+        $("#user").html("Xin chào: " + objUser[0].TenTK);
+      }
+    });
+
+    function search(event) {
+      if (event.keyCode === 13) {
+        $.post("http://localhost:3000/search", {
+          search: $('#search').val()
+        }, function (data, status) {
+          $('#content1').html(data);
+        });
+      }
+    }
+    function nutsearch() {
+      $.post("http://localhost:3000/search", {
+        search: $('#search').val()
+      }, function (data, status) {
+        $('#content1').html(data);
+      });
+    }
+
+    function menuClick(productType) {
+      $.post("http://localhost:3000/getProducByCatId", {
+        catId: productType
+      }, function (data, status) {
+        $('#content1').html(data);
+      });
+    }
+
+    function menuClick1(productType) {
+      $.post("http://localhost:3000/getProducByChuDe", {
+        ChuDe: productType
+      }, function (data, status) {
+        $('#content1').html(data);
+      });
+    }
+
+    function Login() {
+      window.location.href = "/login"
+    }
+
+    function LoginOut() {
+      localStorage.removeItem("user");
+      window.location.href = "/index"
+    }
+
+    function admin() {
+      var user = localStorage.getItem("user");
+      var objUser = JSON.parse(user);
+      if (objUser[0].TenTK === 'Admin') {
+        window.location.href = "/admin"
+      }
+      else {
+        window.location.href = "/index"
+      }
+    }
+
+    function addToCard(MaSach) {
+      var arrProductId = localStorage.getItem("shoppingcard");
+      if (arrProductId == null || arrProductId == undefined) {
+        arrProductId = [MaSach];
+      }
+      else {
+        arrProductId = JSON.parse(arrProductId);
+        if (arrProductId.indexOf(MaSach) == -1) {
+          arrProductId.push(MaSach);
+        }
+      }
+      arrProductId = JSON.stringify(arrProductId);
+      localStorage.setItem("shoppingcard", arrProductId);
+    }
+
+    function shoppingCard() {
+      window.location.href = "/shopping-card";
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="acc">
+      <span id="user" type="button" onclick="admin()"></span>
+      <input style="color: #000;text-align: right;" type="button" onclick="LoginOut()" value="Đăng xuất">
+    </div>
+
+
+    <!-- đầu -->
+    <div class="header">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" onclick="Login()" type="button">Ðăng Nhập</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Cửa Hàng</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Best
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('1')">Lúc Ấy Tôi Chuyển Sinh Thành
+                      Slime</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('2')">Your Name</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('3')">Diệt Slime Suốt 300 Năm, Tôi Levelmax
+                      Lúc Nào Chẳng Hay</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('4')">Toàn Chức Cao Thủ</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('5')">OVERLORD</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('6')">Tháng Tư Là Lời Nói Dối Của
+                      Em</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick('7')">Dáng Hình Thanh Âm</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#">To be continued</a></li>
+                </ul>
+              </li>
+
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">Chủ đề</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#" onclick="menuClick1('Isekai')">Isekai</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick1('Tình Cảm')">Tình cảm</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="menuClick1('Võng Du')">Võng Du</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#">To be continued</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-style" href="#" onclick="shoppingCard()">Giỏ Hàng</a>
+              </li>
+            </ul>
+
+            <div class="d-flex">
+              <input type="text" id="search" onkeypress="search(event)" placeholder="Search">
+              <input type="button" value="Search" onclick="nutsearch()">
+            </div>
+
+          </div>
+        </div>
+      </nav>
+      <!-- kết đầu -->
+
+      <!-- giừa -->
+      <div class="content">
+        <div style="width: 100%; height: 40em;" id="carouselExampleControls" class="carousel slide"
+          data-bs-ride="carousel">
+          <div style="height: 100%" class="carousel-inner">
+            <div class="carousel-item active">
+              <img width="100%" src="https://images6.alphacoders.com/100/thumb-1920-1000479.jpg" class="d-block "
+                alt="">
+            </div>
+            <div class="carousel-item">
+              <img width="100%" src="images/your-name_2c63_1920x1080.jpg" class="d-block " alt="">
+            </div>
+            <div class="carousel-item">
+              <img src="images/wallpaperflare.com_wallpaper.jpg" class="d-block " alt="">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+      <!-- kết giữa -->
+
+
+      <!-- kết nối js -->
+      <div class="content2">
+        <div id="content1"></div>
+      </div>
+      <!-- kết -->
+
+
+
+
+      <!-- phần cuối -->
+      <div class="footer">
+        <footer class="bg-light text-center text-lg-start">
+          <!-- Copyright -->
+          <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Manga:
+            <a class="text-dark" href="https://shonen-sirius.com/series/sirius/slime/">Official website</a>
+          </div>
+        </footer>
+      </div>
+      <!-- phần cuối -->
+
+
+    </div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"></script>
+</body>
+
+</html>

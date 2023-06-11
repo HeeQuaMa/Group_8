@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('https://3.bp.blogspot.com/-YWqjZ9kNU00/W1sNG_GX2vI/AAAAAAAAOXk/e3Yhn6eF1LogqHNj2zysk0iPO4AHPscdwCLcBGAs/s1600/737400.jpg');
+            height: 100vh;
+        }
+
+        #login .container #login-row #login-column #login-box {
+            margin-top: 120px;
+            max-width: 600px;
+            height: 410px;
+            border: 1px solid #9C9C9C;
+            background-color: #EAEAEA;
+            background-color: #F4F4F7;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-size: 200px 280px;
+        }
+
+        #login .container #login-row #login-column #login-box #login-form {
+            padding: 20px;
+        }
+
+        #login .container #login-row #login-column #login-box #login-form #register-link {
+            margin-top: -85px;
+        }
+    </style>
+    <script>
+        function Login() {
+            window.location.href = "/login"
+        }
+
+        function SignUp() {
+            if ($('#TenTk').val() == '') {
+                alert("đăng ký thất bại");
+                return;
+            }
+            if ($('#userName').val() == '') {
+                alert("đăng ký thất bại");
+                return;
+            }
+            if ($('#pass').val() == '') {
+                alert("đăng ký thất bại");
+                return;
+            }
+
+            if ($('#userName').val() != '' && $('#pass').val() != '') {
+                $.post("/checklogin", {
+                    TaiKhoan: $('#userName').val(),
+                }, function (data, status) {
+                    if (data[0] == null) {
+                        $.post("/SignUp", {
+                            TenTk: $('#TenTk').val(),
+                            TaiKhoan: $('#userName').val(),
+                            MatKhau: $('#pass').val()
+                        }, function (data, status) {
+                            alert("đăng ký thành công");
+                        });
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 2000);
+                    }
+                    else {
+                        alert("Đã tồn tại");
+                    }
+                });
+
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="login">
+        <h1 class="text-center text-white pt-5">Comic World</h1>
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <form id="login-form" class="form" action="" method="post">
+                            <h3 class="text-center text-info">Register</h3>
+                            <div class="form-group">
+                                <label for="TenTk" class="text-info">Name:</label><br>
+                                <input type="text" name="TenTk" id="TenTk" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="userName" class="text-info">Username:</label><br>
+                                <input type="text" name="userName" id="userName" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Password:</label><br>
+                                <input type="password" name="password" id="pass" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="Forgot-password" class="text-info"><a>Forgot password</a></label><br>
+                                <input type="button" value="Sign Up" onclick="SignUp()" class="btn btn-info btn-md" />
+                            </div>
+                            <div id="register-link" class="text-right">
+                                <a href="#" class="text-info" onclick="Login()">Login here</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-size: 16px;
+        }
+
+        .content .leftcolumn img {
+            height: auto;
+            width: 450px;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .list img {
+            height: auto;
+            width: 250px;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .content {
+            padding: 16px 16px 25px 16px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            background-color: white;
+            display: flex;
+            height: auto;
+            width: 100%;
+        }
+
+        .content .leftcolumn {
+            margin: 15px;
+            padding: 10px;
+            width: 100%;
+
+        }
+
+        .content .rightcolumn {
+            margin: 15px;
+            padding: 10px;
+            width: 100%;
+            display: inline;
+            position: relative;
+            line-height: 2rem;
+            font-size: 16.5px;
+
+        }
+
+        .box {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            width: 360px;
+            margin: 0 40px;
+            font-size: 16px;
+        }
+
+        .box .left {
+            height: 50px;
+            padding: 10px;
+            color: rgb(226, 9, 9);
+            background-color: white;
+            border: 2px solid rgb(226, 9, 9);
+            border-radius: 10px;
+            width: 170px;
+        }
+
+        .box .right {
+            height: 50px;
+            padding: 10px;
+            color: white;
+            background-color: rgb(226, 9, 9);
+            border: 2px solid rgb(150, 8, 8);
+            border-radius: 10px;
+            width: 170px;
+        }
+
+        .giaohang {
+            margin-top: 24px;
+
+        }
+
+        .doitra {
+            margin-bottom: 24px;
+        }
+
+        .content2 {
+            padding: 16px 16px 25px 16px;
+            clear: both;
+            margin: 0px 0px 10px 0px;
+            padding: 15px;
+            height: auto;
+            width: 100%;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .list {
+            display: flex;
+            text-align: center;
+        }
+
+        .content3 {
+            padding: 16px 16px 25px 16px;
+            margin-top: 10px;
+            clear: both;
+            margin: 0px 0px 10px 0px;
+            padding: 15px;
+            font-weight: 1.2em;
+            width: 100%;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .table-label {
+            font-weight: normal;
+        }
+
+        .container {
+            width: 100%;
+            background-color: rgba(233, 233, 233, 0.993);
+        }
+
+        .gioithieu {
+            line-height: 1.8rem;
+        }
+
+        .acc {
+            font-style: inherit;
+            color: red;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            var arr = window.location.href.split('/');
+            $.get("http://localhost:3000/getDetailData/" + arr[arr.length - 1], function (data, status) {
+                // console.log(data)
+                $(".MaHang").html(data.MaHang);
+                $(".TenSach").html(data.TenSach);
+                $(".TacGia").html(data.TacGia);
+                $(".Nhacungcap").html(data.Nhacungcap);
+                $(".NhaXB").html(data.NhaXB);
+                $(".ChuDe").html(data.ChuDe);
+                $(".Hinhthuc").html(data.Hinhthuc);
+                $(".NamXB").html(data.NamXB);
+                $(".Trongluong").html(data.Trongluong);
+                $(".Kichthuoc").html(data.Kichthuoc);
+                $(".Sotrang").html(data.Sotrang);
+                $(".DonGia").html(data.DonGia + ' đ');
+                $(".Mota").html(data.Mota);
+                $(".SachImage").attr("src", "/images/" + data.SachImage);
+            });
+
+            var user = localStorage.getItem("user");
+            if (user === null || user === undefined) {
+                $("#user").html("Chưa đăng nhập");
+            }
+            else {
+                var objUser = JSON.parse(user);
+                $("#user").html("Xin chào: " + objUser[0].TenTK);
+            }
+        });
+        function LoginOut() {
+            localStorage.removeItem("user");
+            window.location.href = "/index"
+        }
+        function admin() {
+            var user = localStorage.getItem("user");
+            var objUser = JSON.parse(user);
+            if (objUser[0].TaiKhoan === 'admin') {
+                window.location.href = "/admin"
+            }
+            else {
+                window.location.href = "/index"
+            }
+        }
+
+
+        function addToCard() {
+            var arr = window.location.href.split('/');
+            var arrProductId = localStorage.getItem("shoppingcard");
+            $.get("http://localhost:3000/getDetailData/" + arr[arr.length - 1], function (data, status) {
+                if (arrProductId == null || arrProductId == undefined) {
+                    arrProductId = [data.MaSach];
+                }
+                else {
+                    arrProductId = JSON.parse(arrProductId);
+                    if (arrProductId.indexOf(data.MaSach) == -1) {
+                        arrProductId.push(data.MaSach);
+                    }
+                }
+                arrProductId = JSON.stringify(arrProductId);
+                localStorage.setItem("shoppingcard", arrProductId);
+            });
+        }
+        function themcard() {
+            var arr = window.location.href.split('/');
+            var arrProductId = localStorage.getItem("shoppingcard");
+            $.get("http://localhost:3000/getDetailData/" + arr[arr.length - 1], function (data, status) {
+                if (arrProductId == null || arrProductId == undefined) {
+                    arrProductId = [data.MaSach];
+                }
+                else {
+                    arrProductId = JSON.parse(arrProductId);
+                    if (arrProductId.indexOf(data.MaSach) == -1) {
+                        arrProductId.push(data.MaSach);
+                    }
+                }
+                arrProductId = JSON.stringify(arrProductId);
+                localStorage.setItem("shoppingcard", arrProductId);
+                setTimeout(() => {
+                    window.location.href = "/shopping-card"
+                }, 500);
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Đầu  -->
+
+        <head class="header">
+            <div class="acc">
+                <span id="user" type="button" onclick="admin()"></span>
+                <input style="color: #000;text-align: right;" type="button" onclick="LoginOut()" value="Đăng xuất">
+            </div>
+        </head>
+        <!-- kết đầu  -->
+        <div class="container-inner breadcrumbs">
+            <ol class="breadcrumb" style="padding: 10px;">
+                <li class="0">
+                    <a href="/index" title="Trang chủ" style="color: red;text-decoration: none;font-weight: 600;">Trang
+                        chủ</a>
+                    <span>/</span>
+                </li>
+                <li class="1">
+                    <a title="Light Novel">Light Novel</a>
+                </li>
+            </ol>
+        </div>
+
+        <!-- giữa -->
+        <div class="content">
+            <div class="leftcolumn">
+                <img class="SachImage">
+                <div class="box">
+                    <button class="left" style="text-decoration: none"><b onclick="addToCard()">Thêm vào giỏ
+                            hàng</b></button></br>
+                    <button class="right" style="text-decoration: none"><b onclick="themcard()">Mua bán</b></button>
+                </div>
+            </div>
+            <div class="rightcolumn">
+                <h2 class="TenSach"></h2>
+                <div class="mota">
+                    <span>Nhà cung cấp: <b class="Nhacungcap"></b></span></br>
+                    <span>Nhà xuất bản: <b class="NhaXB"></b></span></br>
+                    <span>Chủ đề: <b class="ChuDe"></b></span></br>
+                    <span>Tác giả: <b class="TacGia"></b></span></br>
+                    <span>Hình thức bìa: <b class="Hinhthuc"></b></span>
+                </div></br>
+                <span class="pirce" style="color: rgb(211, 13, 13);">
+                    <h1 class="DonGia"></h1>
+                </span></br>
+                <table class="data-table table-additional">
+                    <colgroup>
+                        <col width="35%">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th class="table-label">Thời gian giao hàng</th>
+                            <td>Giao hàng đến <a href="">Thay đổi</a></td>
+                        </tr>
+                        <tr>
+                            <th class="table-label">Chính sách đổi trả</th>
+                            <td>Đổi trả sản phẩm trong 30 ngày <a href="">Xem thêm</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content2">
+
+            <h4><b>Sản phẩm liên quan</b></h4>
+            <a style="color: rgb(211, 13, 13)">
+                <h5>Series Bộ</h5>
+            </a>
+            <hr>
+
+            <div class="list">
+                <div class="row1">
+                    <a href=""><img class="SachImage" alt=""></br></a>
+                    <a href="" style="color: black; text-decoration: none"><b class="TenSach"></b></a></br>
+                    <a href="" style="color: rgb(211, 13, 13); text-decoration: none"><b class="DonGia"></b></a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="content3">
+            <h4><b>Thông tin sản phẩm</b></h4>
+            <hr>
+            <table class="data-table table-additional">
+                <colgroup>
+                    <col width="40%">
+                    <col>
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th class="table-label">Mã hàng</th>
+                        <td class="MaHang"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Tên Nhà Cung Cấp</th>
+                        <td class="data_supplier">
+                            <a class="Nhacungcap" href=""></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Tác giả</th>
+                        <td class="TacGia"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">NXB</th>
+                        <td class="NhaXB"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Năm XB</th>
+                        <td class="NamXB"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Ngôn Ngữ</th>
+                        <td class="data_languages">Tiếng Việt</td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Trọng lượng (gr)</th>
+                        <td class="Trongluong"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Kích Thước Bao Bì</th>
+                        <td class="Kichthuoc"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Số trang</th>
+                        <td class="Sotrang"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Hình thức</th>
+                        <td class="Hinhthuc"></td>
+                    </tr>
+                    <tr>
+                        <th class="table-label">Sản phẩm bán chạy nhất</th>
+                        <td>
+                            <a style="font-size: 14px; color: #2489F4;" href=" ">Top 100 sản phẩm Manga Khác bán chạy
+                                của tháng</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="gioithieu">
+                <hr>
+                <p style="text-align: justify;font-weight: normal;" class="Mota"></p>
+            </div>
+        </div>
+        <!-- kết giữa -->
+
+        <!-- cuối -->
+        <div class="footer">
+            <footer class="bg-light text-center text-lg-start">
+                <!-- Copyright -->
+                <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                    © 2021 Manga:
+                    <a class="text-dark" href="https://shonen-sirius.com/series/sirius/slime/">Official website</a>
+                </div>
+            </footer>
+        </div>
+        <!-- kết cuối -->
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+        integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

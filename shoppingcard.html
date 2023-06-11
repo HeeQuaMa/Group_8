@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+        function getShoppingCard() {
+            if (localStorage.getItem("shoppingcard") == null || localStorage.getItem("shoppingcard") == undefined || localStorage.getItem("shoppingcard") == "[]") {
+                $('#content').html("Vui lòng chọn sản phẩm");
+            }
+            else {
+                $.post("/getShoppingCard", {
+                    arrProductId: localStorage.getItem("shoppingcard").replace('[', '(').replace(']', ')')
+                }, function (data, status) {
+                    $('#content').html(data);
+                    tongtien();
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            getShoppingCard();
+        });
+
+        function tongtien() {
+            var arrSP = [];
+            var tongtien = 0
+            $(".product").toArray().forEach(item => {
+                tongtien += $(item).attr("price") * $(item).find(".soluong").val() * 1000;
+            });
+            $('.Tongtien').html(tongtien);
+        }
+
+        //Buy
+        function buyProducts() {
+            if ($('#TenKH2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#Diachi2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if ($('#SoDienThoai2').val() == '') {
+                alert("Chưa nhập đủ thông tin");
+                return;
+            }
+            if (localStorage.getItem("shoppingcard") == null || localStorage.getItem("shoppingcard") == undefined || localStorage.getItem("shoppingcard") == "[]") {
+                alert("Vui lòng chọn sản phẩm")
+            }
+            else {
+                if ($('#TenKH2').val() != '' && $('#Diachi2').val() != '' && $('#SoDienThoai2').val() != '') {
+                    var arrSP = [];
+                    $(".product").toArray().forEach(item => {
+                        arrSP.push({
+                            Masach: $(item).attr("productId"),
+                            SoLuong: $(item).find(".soluong").val(),
+                            GiaBan: $(item).attr("price"),
+                        });
+                    });
+
+                    $.post("/adthemkh", {
+                        MaKH: JSON.parse(localStorage.getItem('user'))[0].id,
+                        TenKH: $('#TenKH2').val(),
+                        Diachi: $('#Diachi2').val(),
+                        SoDienThoai: $('#SoDienThoai2').val(),
+                        Tongtien: document.querySelector(".Tongtien").innerHTML
+                    }, function (data, status) {
+                    });
+
+                    $.post("/buyProduct", {
+                        MaKH: JSON.parse(localStorage.getItem('user'))[0].id,
+                        arrSP: arrSP,
+                    }, function (data, status) {
+                        console.log(JSON.parse(localStorage.getItem('user'))[0].id)
+                        alert("Mua thành công");
+                    });
+                    setTimeout(() => {
+                        window.location.href = "/index"
+                        localStorage.removeItem("shoppingcard")
+                    }, 2000);
+                }
+            }
+
+        }
+
+        function deleteProduct(productId) {
+            var arrSP = JSON.parse(localStorage.getItem("shoppingcard"));
+            var arrSP2 = [];
+            arrSP.forEach((item) => {
+                if (item != productId) {
+                    arrSP2.push(item);
+                }
+            });
+            localStorage.setItem("shoppingcard", JSON.stringify(arrSP2));
+            getShoppingCard();
+        }
+    </script>
+    <style>
+        body {
+            margin: 50px;
+            margin-top: 10px;
+            padding: 0px;
+            overflow-x: hidden;
+        }
+
+        #wrapper {
+            padding-right: 0;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        #wrapper.toggled {
+            padding-right: 350px;
+        }
+
+        #sidebar-wrapper {
+            z-index: 1000;
+            position: fixed;
+            right: 350px;
+            width: 0;
+            height: 100%;
+            margin-right: -350px;
+            overflow-y: auto;
+            background-color: rgb(214, 214, 214);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            width: 350px;
+        }
+
+        #page-content-wrapper {
+            width: 100%;
+            position: absolute;
+            padding: 15px;
+        }
+
+        #wrapper.toggled #page-content-wrapper {
+            position: absolute;
+            margin-left: -350px;
+        }
+
+        .thanhtoan {
+            height: 55px;
+            padding: 10px;
+            color: white;
+            background-color: rgb(226, 9, 9);
+            border: 2px solid rgb(150, 8, 8);
+            border-radius: 10px;
+            width: 170px;
+        }
+
+        .acc {
+            color: red;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        table.list {
+            width: 100%;
+        }
+
+        table.list thead {
+            display: table;
+            float: left;
+            width: 100%;
+        }
+
+        table.list thead th {
+            text-align: center;
+        }
+
+        table.list tbody {
+            float: left;
+            width: 100%;
+        }
+
+        table.list tbody tr {
+            display: table;
+            width: 100%;
+        }
+
+        table.list th,
+        td {
+            width: 25%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="wrapper" class="toggled">
+        <div class="container">
+            <div id="sidebar-wrapper">
+                <div class="container" style="padding: 50px;line-height: 30px;">
+
+                    <h3 style="text-align: center;color: blue;">Thanh toán</h3>
+                    <b>Họ và Tên:</b><br><input type="text" id="TenKH2" style="width: 250px;" /><br>
+                    <b>Số điện thoại:</b><br><input type="text" id="SoDienThoai2" style="width: 250px;" /><br>
+                    <b>Địa chỉ nhận hàng:</b><br><input type="text" id="Diachi2" style="width: 250px;" /><br>
+                    <b>Tổng số tiền:</b><br><span class="Tongtien" style="color: red;font-size: 20px;">0</span><b
+                        style="color: red;font-size: 20px;"> Đ</b><br>
+                    <input type="button" value="Xác nhận mua" onclick="buyProducts()" class="thanhtoan" />
+
+                </div>
+            </div>
+
+            <div class="acc">
+                <h1><a href="/index" style="text-decoration: none;">Trang Chủ</a></h1>
+
+
+            </div>
+
+        </div>
+
+        <div id="content" style="text-align: center;padding: 10px;"></div>
+
+        <div class="footer">
+            <footer class="bg-light text-center text-lg-start">
+                <!-- Copyright -->
+                <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                    © 2021 Manga:
+                    <a class="text-dark" href="https://shonen-sirius.com/series/sirius/slime/">Official website</a>
+                </div>
+            </footer>
+        </div>
+        <!-- ph?n cu?i -->
+    </div>
+    </div>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
