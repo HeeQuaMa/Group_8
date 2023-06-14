@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 50px;
+    height: 70px;
+    align-items: center;
+}
+
+.logo {
+    flex: 1;
+    padding-top: 70px;
+}
+
+.logo>img {
+    width: 150px;
+    height: 150px;
+}
+
+/* Mục chức năng */
+.menu {
+    flex: 3;
+    display: flex;
+}
+
+.menu>li {
+    padding: 0 12px;
+    position: relative;
+}
+
+.menu>li:hover .loai-sach {
+    visibility: visible;
+    top: 30px;
+}
+
+.loai-sach {
+    position: absolute;
+    border: 1px solid #ccc;
+    width: 150px;
+    padding: 10px 0 10px 20px;
+    visibility: hidden;
+    top: 50px;
+    transition: 0.1s;
+}
+
+.loai-sach li a {
+    font-size: 12px !important;
+    font-weight: normal;
+
+}
+
+.menu>li>a {
+    font-size: 15px;
+    font-weight: bold !important;
+    display: block;
+    line-height: 30px;
+}
+
+/* --------------------------------------------------------------- */
+.other {
+    flex: 1;
+    display: flex;
+}
+
+.other>li {
+    padding: 0 12px;
+}
+    
+.other>li:first-child {
+    position: relative;
+}
+
+.other>li:first-child input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #333;
+    padding: 10px;
+}
+
+.other>li:first-child i {
+    position: absolute;
+    right: 10px;
+}
