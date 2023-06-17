@@ -15,7 +15,7 @@
     <header>
         <!-- <h1>SAIGON BookStore</h1> -->
         <div class="logo">
-            <img src="./img/logo2.jpg">
+            <img src="./img/logo3.jpg">
         </div>
         <div class="menu">
             <li><a href="">Sách</a>
@@ -44,9 +44,34 @@
             <li> <a class="fa fa-shopping-bag"></a></li>
         </div>
     </header>
+    <section class="header">
+        <div class="aspect-ratio-169">
+            <img src="img/background1.jpg">
+            <img src="img/background2.jpg">
+            <img src="img/background3.jpg">
+        </div>
+    </section>
     <!-- <footer>
         <p>&copy; 2023 SaiGon Bookstore. All rights reserved.</p>
     </footer> -->
 </body>
+<script>
+const imgPosition = document.querySelectorAll(".aspect-ratio-169 img");
+const imgMenu = document.querySelectorAll('.aspect-ratio-169');
+let imgNuber = imgPosition.length;
+let index = 0;
+// console.log(imgPosition)
+imgPosition.forEach(function(image,index){
+    image.style.left = index*100 + "%";
+});
+function backgroundSlide (){
+    const imgContainer = document.querySelector('.aspect-ratio-169');
+    index++;
+    console.log(index);
+    if (index>=imgNuber) {index=0};
+    imgContainer.style.left = "-" +index*100+ "%";
+}
+setInterval(backgroundSlide,5000);
 
+</script>
 </html>
