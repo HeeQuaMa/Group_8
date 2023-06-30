@@ -15,7 +15,7 @@
     <header>
         <!-- <h1>SAIGON BookStore</h1> -->
         <div class="logo">
-            <img src="./img/logo3.jpg">
+            <a href="file:///C:/B%C3%A0i%20T%E1%BA%ADp/index.html"><img src="./img/logo (2).png"></a>
         </div>
         <div class="menu">
             <li><a href="">Sách</a>
@@ -48,28 +48,91 @@
         <div class="aspect-ratio-169">
             <img src="img/background1.jpg">
             <img src="img/background2.jpg">
-            <img src="img/background3.jpg">
+            <img src="img/background4.jpg">
         </div>
+    
+        <div class="dot-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </section>
+<!------------------------------contact------------------------ -->
+    <section class="contact-item">
+        <p>Tải Ứng Dụng BookStore</p>
+        <div class="app-download">
+            <a href="img/download.png"><img src="img/appstore3.png"></a>
+            <a href="img/download.png"><img src="img/googleplay.png"></a>
+        </div>
+        <p>Nhận Thêm Tin Từ BookStore</p>
+        <input type="text" placeholder="Nhập Email Của bạn...">
     </section>
     <!-- <footer>
         <p>&copy; 2023 SaiGon Bookstore. All rights reserved.</p>
     </footer> -->
+<!-----------------------------footer---------------------------->
+<footer>
+    <div class="footer-top">
+        <li><a href=""><img src="img/dangkibocongthuong.png"></a></li>
+        <li><a href=""><alt=""></a>Liên Hệ</li>
+        <li><a href=""><alt=""></a>Tuyển Dụng</li>
+        <li><a href=""><alt=""></a>Giới Thiệu</li>
+        <li>
+            <a href="https://www.facebook.com/" class="fab fa-facebook-f"></a>
+            <a href="https://www.instagram.com/" class="fab fa-instagram"></a>
+            <a href="https://www.youtube.com/" class="fab fa-youtube"></a>
+        </li>
+    </div>
+<p>
+    Công Ty Cổ Phần Dự Kim Với Số Đăng Ký Kinh Doanh: 0123456789 <br>
+    Địa Chỉ Đăng Kí: 12/34/56 Đường abcdfe phường xyz Q.aabbcc Tp.54321 - 090 123 456 <br>
+    Đặt Hàng Online : <span>090 321 123</span>
+</p>
+<div class="footer-bottom">
+    ©BookStore All Rights Reserved
+</div>
+</footer>
 </body>
 <script>
+// const header = document.querySelector("header");
+// window.addEventListener("scroll", function(){
+//     const x = window.pageYOffset;
+//     if (x > 0){
+//         header.classList.add("sticky");
+//     }
+//     else {
+//         header.classList.remove("sticky");
+//     }
+// });
+
+
+
 const imgPosition = document.querySelectorAll(".aspect-ratio-169 img");
 const imgMenu = document.querySelectorAll('.aspect-ratio-169');
+const dotItem = document.querySelectorAll(".dot")
 let imgNuber = imgPosition.length;
 let index = 0;
-// console.log(imgPosition)
+//------------------console.log(imgPosition)-----------------//
 imgPosition.forEach(function(image,index){
     image.style.left = index*100 + "%";
+    dotItem[index].addEventListener("click",function(){
+
+    })
+
 });
 function backgroundSlide (){
     const imgContainer = document.querySelector('.aspect-ratio-169');
     index++;
     console.log(index);
     if (index>=imgNuber) {index=0};
+    header (index)
+}
+function header (index) {
+    const imgContainer = document.querySelector('.aspect-ratio-169');
     imgContainer.style.left = "-" +index*100+ "%";
+    const dotActive = document.querySelector('.active')
+    dotActive.classList.remove("active")
+    dotItem[index].classList.add("active")
 }
 setInterval(backgroundSlide,5000);
 
